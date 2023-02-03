@@ -1,0 +1,107 @@
+;; 
+;;  Variaveis dinamicas
+
+;;
+;;  Clock
+;;
+;;  - Widget: Relogio.
+(defwidget win_time []
+    (eventbox :cursor "default"
+        (box :orientation "h" :space-evenly "false" :halign "center"
+            (box :orientation "h" :class "win-time" :space-evenly "true"
+                (box :class "time" "${hour}:${minute}")
+            )
+        )
+    )
+)
+;;
+;;	System
+;;
+;;	- Widget: System Widget
+(defwidget win_sys []
+    (eventbox :cursor "default"
+        (box :orientation "h" :space-evenly "false" :halign "left"
+            (box :orientatin "h" :class "sys-battery" :space-evenly "true"
+                :tooltip {battery-capacity}
+                (image :class "sys-item"
+                    :image-width 28
+                    :image-height 28
+                    :path {battery-icon}
+                )
+            )
+
+            (box :orientatin "h" :class "sys-audio" :space-evenly "true"
+                :tooltip "Volume: ${volume}%"
+                (eventbox
+                    (image :class "sys-item"
+                        :image-width 28
+                        :image-height 28
+                        :path "/usr/share/icons/Papirus-Dark/24x24/panel/audio-ready.svg"
+                    )
+                )
+            )
+
+            (box :orientatin "h" :class "sys-item split-bar" :space-evenly "false"
+                "|"
+            )
+
+            (box :orientatin "h" :class "sys-audio" :space-evenly "true"
+                (label :class "sys-item" :text "RAM: ${round(EWW_RAM.used_mem_perc, 0)}% HD: ${round((EWW_DISK["/"].used) / 1074790000, 1)}GB / ${round((EWW_DISK["/"].total) / 1074790000, 1)}GB CPU: ${round(EWW_CPU.avg, 0)}%")
+            )
+        )
+    )
+)
+;;
+;;  Variaveis
+;;
+;;  - Variavel responsavel pelo tempo registrado no relogio.
+(defpoll hour :interval "10s" "date \"+%H\"")
+(defpoll minute :interval "10s" "date \"+%M\"")
+;;
+;;	- Variaveis responsaveis pelas alteracoes de status do sistema.
+(defpoll battery-icon :interval "1s" "~/Projects/Archlinux/Battery/battery icon")
+(defpoll battery-capacity :interval "1s" "~/Projects/Archlinux/Battery/battery capacity")
+
+(defpoll volume :interval "1s" "pamixer --get-volume")
+;;
+;;  Janela do Relogio.
+(defwindow win_time
+    :monitor 0
+    :geometry (geometry 
+		:x "0px" 
+		:y "8px" 
+		:width "92px" 
+		:height "34px" 
+		:anchor "top center"
+	)
+    :stacking "bg"
+    (win_time)
+)
+;;
+;;  Janela com as informaçoes do sistema.
+(defwindow win_sys 
+	:monitor 0 
+	:geometry (geometry 
+		:x "452" 
+		:y "8px" 
+		:width "780px" 
+		:height "34px" 
+		:anchor "top center") 
+	:stacking "bg"
+	:focusable "true"
+    (win_sys)
+)
+;;
+;;  Janela do lado esquerdo
+(defwindow win_aux 
+	:monitor 0 
+	:geometry (geometry 
+		:x "-452" 
+		:y "8px" 
+		:width "780px" 
+		:height "34px" 
+		:anchor "top center") 
+	:stacking "bg"
+	:focusable "true"
+    "Teste"
+)
